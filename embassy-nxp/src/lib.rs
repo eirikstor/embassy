@@ -22,9 +22,11 @@ mod iomuxc;
 #[cfg(feature = "_time_driver")]
 #[cfg_attr(feature = "time-driver-pit", path = "time_driver/pit.rs")]
 #[cfg_attr(feature = "time-driver-rtc", path = "time_driver/rtc.rs")]
+#[cfg_attr(feature = "time-driver-ctimer", path = "time_driver/ctimer.rs")]
 mod time_driver;
 
 // This mod MUST go last, so that it sees all the `impl_foo!` macros
+#[cfg_attr(feature = "lpc804", path = "chips/lpc804.rs")]
 #[cfg_attr(feature = "lpc55-core0", path = "chips/lpc55.rs")]
 #[cfg_attr(feature = "mimxrt1011", path = "chips/mimxrt1011.rs")]
 #[cfg_attr(feature = "mimxrt1062", path = "chips/mimxrt1062.rs")]
@@ -154,7 +156,7 @@ pub fn init(_config: config::Config) -> Peripherals {
         pac::CCM.ccgr6().modify(|v| v.set_cg0(1));
     }
 
-    #[cfg(any(feature = "lpc55-core0", rt1xxx))]
+    #[cfg(any(feature = "lpc55-core0", feature = "lpc804", rt1xxx))]
     gpio::init();
 
     #[cfg(feature = "lpc55-core0")]
